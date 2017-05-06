@@ -4,6 +4,7 @@
     "description": "This vscode extion shows the last commit timestamp in order to keep your github active. ( keep.grass for vscode )",
     "version": "0.0.1",
     "publisher": "wraith13",
+    "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
         "vscode": "^1.5.0"
     },
