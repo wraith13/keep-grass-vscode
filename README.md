@@ -4,12 +4,14 @@
 
 This vscode extion shows the last commit timestamp in order to keep your github active. ( keep.grass for vscode )
 
-GitHub のプロフィールページで Contributions が緑で埋まっているのってやっぱり格好いいですよね！
-keep.grass は *毎日欠かさず* 進捗を出し続け GitHub 上の Contributions を緑で埋め続けようとする開発者の為に最後の Activity から24時間が経過するまでの残り時間を知らせる為のアプリです。
-残り時間が少なくなってきた場合や、生活サイクルに合わせて決まった時間に残り時間を通知することもできます。
 
-【お断り】
-GitHub は Activity がどのように Contributions に反映されるか詳細な仕様を公開していないようで、 keep.grass もただ最終 Activity の日時を元に残り時間を表示するだけとなりますので、あくまで *目安* としてご利用頂ければ幸いです。
+Contributions is filled with green on the profile page of GitHub is cool!
+keep.grass is an application to let you know the time remaining until 24 hours elapse from the last Activity for developers trying to continue filling out Contributions on GitHub with green *every day without fail*.
+keep.grass can also notify the remaining time when the remaining time is getting low or at a fixed time according to your life cycle.
+
+## *Notes*
+
+Since GitHub does not seem to disclose detailed specifications as to how Activity will be reflected in Contributions, keep.grass will only show the remaining time based on the date and time of the last Activity, so *estimated* It would be greatly appreciated if you could use it.
 
 > * [keep.grass for iOS](https://itunes.apple.com/us/app/keep.grass/id1170833136?l=ja&ls=1&mt=8)
 > * [keep.grass for Android](https://play.google.com/store/apps/details?id=net.trickpalace.keep_grass)
