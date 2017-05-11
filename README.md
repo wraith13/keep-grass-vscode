@@ -4,7 +4,6 @@
 
 This vscode extion shows the last commit timestamp in order to keep your github active. ( keep.grass for vscode )
 
-
 Contributions is filled with green on the profile page of GitHub is cool!
 keep.grass is an application to let you know the time remaining until 24 hours elapse from the last Activity for developers trying to continue filling out Contributions on GitHub with green *every day without fail*.
 keep.grass can also notify the remaining time when the remaining time is getting low or at a fixed time according to your life cycle.
@@ -25,11 +24,11 @@ keep.grass shows the last commit timestamp and/or left time.
 
 ## Tutorial
 
-### 0. ⬇️ Install keep.grass for vscode:
+### 0. ⬇️ Install keep.grass for vscode
 
 Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>), Type `ext install keep-grass-vscode` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>.  Restart VS Code when installation is completed.
 
-### 2. 🔧 Configure keep.grass for vscode:
+### 1. 🔧 Configure keep.grass for vscode
 
 This extension contributes the following settings by [`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>File</kbd> -> <kbd>Preferences</kbd> -> <kbd>User Settings</kbd> ):
 
@@ -57,7 +56,6 @@ Command name on `keybindings.json` is diffarent from on Command Pallete. See bel
 ## Release Notes
 
 see ChangLog on [marketplace](https://marketplace.visualstudio.com/items/wraith13.keep-grass-vscode/changelog) or [github](https://github.com/wraith13/keep-grass-vscode/blob/master/CHANGELOG.md)
-
 
 ## Support
 
