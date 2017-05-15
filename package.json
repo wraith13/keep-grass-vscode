@@ -20,20 +20,45 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "*"
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
-        }]
-    },
-    "scripts": {
+        "commands": [
+            {
+                "command": "keep-grass.update",
+                "title": "update",
+                "category": "keep.grass"
+            }
+        ],
+        "configuration": {
+            "title": "keep.grass configuration",
+            "properties": {
+                "keep-grass-vscode.user": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Your GitHub account"
+                },
+                "keep-grass-vscode.show": {
+                    "type": "string",
+                    "default": "both",
+                    "description": "Select show item on status bar",
+                    "enum": [
+                        "left time",
+                        "last stamp",
+                        "both"
+                    ]
+                }
+            }
+        }
+    },    "scripts": {
         "vscode:prepublish": "tsc -p ./",
         "compile": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "node ./node_modules/vscode/bin/test"
+    },
+    "dependencies": {
+        "request": "^2.79.0"
     },
     "devDependencies": {
         "typescript": "^2.0.3",
