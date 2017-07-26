@@ -97,7 +97,7 @@ export module KeepGrass
                     (
                         ("lest stamp" !== show ? lastUpdate.toLocaleString(): "")
                         +" "
-                        +("last stamp" !== show ? new Date(left).toLocaleTimeString(): "") // 🚫 これダメ！！！
+                        +("last stamp" !== show ? leftTimeToString(left): "") // 🚫 これダメ！！！
                     )
                     .trim();
                     console.log(text);
@@ -141,6 +141,27 @@ export module KeepGrass
             + numberToByteString(1.0 - LeftTimeRate)
             + numberToByteString(Math.min(0.5, LeftTimeRate))
             + numberToByteString(0.0);
+    }
+
+    function pad(value : number) : string
+    {
+        return (10 <= value ? "":　"0") +value.toString();
+    }
+    function leftTimeToString(leftTime : number) : string
+    {
+        if (leftTime < 0)
+        {
+            return "-" + leftTimeToString(-leftTime);
+        }
+        else
+        {
+            const totalSeconds = Math.floor(leftTime /1000);
+            //const seconds = totalSeconds % 60;
+            const totalMinutes = Math.floor(totalSeconds /60);
+            const minutes = totalMinutes % 60;
+            const hours = Math.floor(totalMinutes /60);
+            return pad(hours) +":" +pad(minutes) //+":" +pad(seconds);
+        }
     }
 }
 
