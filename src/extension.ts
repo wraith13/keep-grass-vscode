@@ -47,11 +47,11 @@ module rx {
 
 export module KeepGrass
 {
-    var indicator : StatusBarItem;
+    var indicator : vscode.StatusBarItem;
 
     function getConfiguration<type>(key?: string): type
     {
-        var configuration = vscode.workspace.getConfiguration("keep-grass-vscode");
+        const configuration = vscode.workspace.getConfiguration("keep-grass-vscode");
         return key ?
             configuration[key] :
             configuration;
@@ -59,7 +59,7 @@ export module KeepGrass
 
     export function registerCommand(context: vscode.ExtensionContext): void
     {
-        indicator = new StatusBarItem();
+        indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
         context.subscriptions.push(indicator);
         context.subscriptions.push
         (
@@ -68,15 +68,15 @@ export module KeepGrass
                 'keep-grass-vscode.update', update
             )
         );
-        indicator.update(null, null);
+        update();
     }
 
     export async function update() : Promise<void>
     {
-        var user = getConfiguration("user");
-        if (null !== user && undefined !== user)
+        const user = getConfiguration("user");
+        if (user)
         {
-            let { error, response, body } = await rx.get(`https://github.com/${user}.atom`);
+            const { error, response, body } = await rx.get(`https://github.com/${user}.atom`);
             if (error)
             {
                 console.error(error);
@@ -85,17 +85,27 @@ export module KeepGrass
             if (response.statusCode === 200)
             {
                 //console.log(body);
-                var lastUpdate = getLastUpdate(body);
+                const lastUpdate = getLastUpdate(body);
                 console.log(lastUpdate);
                 if (lastUpdate)
                 {
-                    console.log(lastUpdate.toLocaleString());
-                    var day = 24 *60 *60 *1000;
-                    var limit = lastUpdate.getTime() +day;
-                    var left = limit - Date.now();
-                    var color = makeLeftTimeColor((left *1.0) /(day *1.0));
+                    const day = 24 *60 *60 *1000;
+                    const limit = lastUpdate.getTime() +day;
+                    const left = limit - Date.now();
+                    const show = getConfiguration("show");
+                    const text =
+                    (
+                        ("lest stamp" !== show ? lastUpdate.toLocaleString(): "")
+                        +" "
+                        +("last stamp" !== show ? new Date(left).toLocaleTimeString(): "") // 🚫 これダメ！！！
+                    )
+                    .trim();
+                    console.log(text);
+                    const color = makeLeftTimeColor((left *1.0) /(day *1.0));
                     console.log(color);
-                    indicator.update(lastUpdate.toLocaleString(), color);
+                    indicator.text = text;
+                    indicator.color = color;
+                    indicator.show();
                 }
             }
         }
@@ -131,39 +141,6 @@ export module KeepGrass
             + numberToByteString(1.0 - LeftTimeRate)
             + numberToByteString(Math.min(0.5, LeftTimeRate))
             + numberToByteString(0.0);
-    }
-
-    class StatusBarItem
-    {
-
-        private _statusBarItem: vscode.StatusBarItem;
-
-        public update(text : string | null, color :string | null)
-        {
-            if (text && color)
-            {
-                this._statusBarItem.text = text;
-                this._statusBarItem.color = color;
-                this._statusBarItem.show();
-            }
-            else
-            {
-                // Create as needed
-                if (!this._statusBarItem)
-                {
-                    this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
-                }
-
-                this._statusBarItem.text = "🌱！！！！";
-                this._statusBarItem.color = "#FF8888";
-                this._statusBarItem.show();
-            }
-       }
-
-        dispose()
-        {
-            this._statusBarItem.dispose();
-        }
     }
 }
 
