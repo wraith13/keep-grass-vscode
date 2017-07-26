@@ -47,6 +47,8 @@ module rx {
 
 export module KeepGrass
 {
+    var indicator : StatusBarItem;
+
     function getConfiguration<type>(key?: string): type
     {
         var configuration = vscode.workspace.getConfiguration("keep-grass-vscode");
@@ -57,8 +59,8 @@ export module KeepGrass
 
     export function registerCommand(context: vscode.ExtensionContext): void
     {
-        var statusBarItem = new StatusBarItem();
-        context.subscriptions.push(statusBarItem);
+        indicator = new StatusBarItem();
+        context.subscriptions.push(indicator);
         context.subscriptions.push
         (
             vscode.commands.registerCommand
@@ -66,7 +68,7 @@ export module KeepGrass
                 'keep-grass-vscode.update', update
             )
         );
-        statusBarItem.updateWordCount();
+        indicator.update(null, null);
     }
 
     export async function update() : Promise<void>
@@ -88,6 +90,12 @@ export module KeepGrass
                 if (lastUpdate)
                 {
                     console.log(lastUpdate.toLocaleString());
+                    var day = 24 *60 *60 *1000;
+                    var limit = lastUpdate.getTime() +day;
+                    var left = limit - Date.now();
+                    var color = makeLeftTimeColor((left *1.0) /(day *1.0));
+                    console.log(color);
+                    indicator.update(lastUpdate.toLocaleString(), color);
                 }
             }
         }
@@ -117,9 +125,10 @@ export module KeepGrass
         }
         return ("00" +Math.floor(value *255).toString(16)).substr(-2);
     }
-    export function MakeLeftTimeColor(LeftTimeRate : number) : string
+    export function makeLeftTimeColor(LeftTimeRate : number) : string
     {
-        return numberToByteString(1.0 - LeftTimeRate)
+        return "#"
+            + numberToByteString(1.0 - LeftTimeRate)
             + numberToByteString(Math.min(0.5, LeftTimeRate))
             + numberToByteString(0.0);
     }
@@ -129,57 +138,27 @@ export module KeepGrass
 
         private _statusBarItem: vscode.StatusBarItem;
 
-        public updateWordCount()
+        public update(text : string | null, color :string | null)
         {
-
-            // Create as needed
-            if (!this._statusBarItem)
+            if (text && color)
             {
-                this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
-            }
-
-            this._statusBarItem.text = "🌱！！！！";
-            this._statusBarItem.color = "#FF8888";
-            this._statusBarItem.show();
-
-            /*
-            // Get the current text editor
-            let editor = vscode.window.activeTextEditor;
-            if (!editor) {
-                this._statusBarItem.hide();
-                return;
-            }
-
-            let doc = editor.document;
-
-            // Only update status if an Markdown file
-            if (doc.languageId === "markdown") {
-                let wordCount = this._getWordCount(doc);
-
-                // Update the status bar
-                this._statusBarItem.text = wordCount !== 1 ? `${wordCount} Words` : '1 Word';
+                this._statusBarItem.text = text;
+                this._statusBarItem.color = color;
                 this._statusBarItem.show();
-            } else {
-                this._statusBarItem.hide();
-            }*/
-        }
-
-        public _getWordCount(doc: vscode.TextDocument): number
-        {
-
-            let docContent = doc.getText();
-
-            // Parse out unwanted whitespace so the split is accurate
-            docContent = docContent.replace(/(< ([^>]+)<)/g, '').replace(/\s+/g, ' ');
-            docContent = docContent.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-            let wordCount = 0;
-            if (docContent !== "")
-            {
-                wordCount = docContent.split(" ").length;
             }
+            else
+            {
+                // Create as needed
+                if (!this._statusBarItem)
+                {
+                    this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+                }
 
-            return wordCount;
-        }
+                this._statusBarItem.text = "🌱！！！！";
+                this._statusBarItem.color = "#FF8888";
+                this._statusBarItem.show();
+            }
+       }
 
         dispose()
         {
