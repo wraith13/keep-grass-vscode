@@ -104,7 +104,7 @@ export module KeepGrass
         (
             ("lest stamp" !== show ? lastUpdate.toLocaleString(): "")
             +" "
-            +("last stamp" !== show ? leftTimeToString(left): "") // 🚫 これダメ！！！
+            +("last stamp" !== show ? leftTimeToString(left): "")
         )
         .trim();
         console.log(text);
