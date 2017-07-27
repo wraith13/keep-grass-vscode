@@ -89,26 +89,30 @@ export module KeepGrass
                 console.log(lastUpdate);
                 if (lastUpdate)
                 {
-                    const day = 24 *60 *60 *1000;
-                    const limit = lastUpdate.getTime() +day;
-                    const left = limit - Date.now();
-                    const show = getConfiguration("show");
-                    const text =
-                    (
-                        ("lest stamp" !== show ? lastUpdate.toLocaleString(): "")
-                        +" "
-                        +("last stamp" !== show ? leftTimeToString(left): "") // 🚫 これダメ！！！
-                    )
-                    .trim();
-                    console.log(text);
-                    const color = makeLeftTimeColor((left *1.0) /(day *1.0));
-                    console.log(color);
-                    indicator.text = text;
-                    indicator.color = color;
-                    indicator.show();
+                    updateIndicator(lastUpdate);
                 }
             }
         }
+    }
+    export function updateIndicator(lastUpdate : Date) : void
+    {
+        const day = 24 *60 *60 *1000;
+        const limit = lastUpdate.getTime() +day;
+        const left = limit - Date.now();
+        const show = getConfiguration("show");
+        const text =
+        (
+            ("lest stamp" !== show ? lastUpdate.toLocaleString(): "")
+            +" "
+            +("last stamp" !== show ? leftTimeToString(left): "") // 🚫 これダメ！！！
+        )
+        .trim();
+        console.log(text);
+        const color = makeLeftTimeColor((left *1.0) /(day *1.0));
+        console.log(color);
+        indicator.text = text;
+        indicator.color = color;
+        indicator.show();
     }
 
     function parseISODate(source : string) : Date
