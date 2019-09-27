@@ -13,14 +13,12 @@ module rx {
             resolve => request.get
             (
                 url,
-                (error : string, response : string, body : string) => resolve
-                (
-                    {
+                (error: any, response: request.Response, body: any) => resolve
+                ({
                         error,
                         response,
                         body
-                    }
-                )
+                })
             )
         );
     }
@@ -32,14 +30,12 @@ module rx {
             resolve => request
             (
                 data,
-                (error : string, response : string, body : string) => resolve
-                (
-                    {
-                        error,
-                        response,
-                        body
-                    }
-                )
+                (error: any, response: request.Response, body: any) => resolve
+                ({
+                    error,
+                    response,
+                    body
+                })
             )
         );
     }
