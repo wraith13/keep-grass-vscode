@@ -4,9 +4,9 @@
 import * as vscode from 'vscode';
 import * as request from 'request';
 
-module rx {
-    export function get(url: string)
-        : Thenable<{ error: any, response: any, body: any }>
+module rx
+{
+    export const get = (url: string): Thenable<{ error: any, response: any, body: any }> =>
     {
         return new Promise
         (
@@ -21,9 +21,8 @@ module rx {
                 })
             )
         );
-    }
-    export function execute(data: any)
-        : Thenable<{ error: any, response: any, body: any }>
+    };
+    export const execute = (data: any): Thenable<{ error: any, response: any, body: any }> =>
     {
         return new Promise
         (
@@ -38,22 +37,22 @@ module rx {
                 })
             )
         );
-    }
+    };
 }
 
 export module KeepGrass
 {
     var indicator : vscode.StatusBarItem;
 
-    function getConfiguration<type>(key?: string): type
+    const getConfiguration = <type>(key?: string): type =>
     {
         const configuration = vscode.workspace.getConfiguration("keep-grass-vscode");
         return key ?
             configuration[key] :
             configuration;
-    }
+    };
 
-    export function registerCommand(context: vscode.ExtensionContext): void
+    export const registerCommand = (context: vscode.ExtensionContext): void =>
     {
         indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
         context.subscriptions.push(indicator);
@@ -65,9 +64,9 @@ export module KeepGrass
             )
         );
         update();
-    }
+    };
 
-    export async function update() : Promise<void>
+    export const update = async () : Promise<void> =>
     {
         const user = getConfiguration("user");
         if (user)
@@ -89,8 +88,8 @@ export module KeepGrass
                 }
             }
         }
-    }
-    export function updateIndicator(lastUpdate : Date) : void
+    };
+    export const updateIndicator = (lastUpdate : Date) : void =>
     {
         const day = 24 *60 *60 *1000;
         const limit = lastUpdate.getTime() +day;
@@ -109,21 +108,21 @@ export module KeepGrass
         indicator.text = text;
         indicator.color = color;
         indicator.show();
-    }
+    };
 
-    function parseISODate(source : string) : Date
+    const parseISODate = (source : string) : Date =>
     {
         return new Date(Date.parse(source.replace("T", " ")));
-    }
+    };
 
-    function getLastUpdate(xml : string) : Date | null
+    const getLastUpdate = (xml : string) : Date | null =>
     {
         var match = /<updated>(.*?)<\/updated>/.exec(xml);
         //console.log(match ? `${match[1]} ${match[2]}`: null);
         return match ? new Date(parseISODate(match[1])): null;
-    }
+    };
 
-    export function numberToByteString(value : number) : string
+    export const numberToByteString = (value : number) : string =>
     {
         if (value <= 0.0)
         {
@@ -134,20 +133,20 @@ export module KeepGrass
             return "ff";
         }
         return ("00" +Math.floor(value *255).toString(16)).substr(-2);
-    }
-    export function makeLeftTimeColor(LeftTimeRate : number) : string
+    };
+    export const makeLeftTimeColor = (LeftTimeRate : number) : string =>
     {
         return "#"
             + numberToByteString(1.0 - LeftTimeRate)
             + numberToByteString(Math.min(0.5, LeftTimeRate))
             + numberToByteString(0.0);
-    }
+    };
 
-    function pad(value : number) : string
+    const pad = (value : number) : string =>
     {
         return (10 <= value ? "":　"0") +value.toString();
-    }
-    function leftTimeToString(leftTime : number) : string
+    };
+    const leftTimeToString = (leftTime : number) : string =>
     {
         if (leftTime < 0)
         {
@@ -162,12 +161,14 @@ export module KeepGrass
             const hours = Math.floor(totalMinutes /60);
             return pad(hours) +":" +pad(minutes) //+":" +pad(seconds);
         }
-    }
+    };
 }
 
-export function activate(context: vscode.ExtensionContext) {
+export const activate = (context: vscode.ExtensionContext) =>
+{
     KeepGrass.registerCommand(context);
 }
 
-export function deactivate() {
+export const deactivate = () =>
+{
 }
