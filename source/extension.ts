@@ -6,38 +6,32 @@ import * as request from 'request';
 
 module rx
 {
-    export const get = (url: string): Thenable<{ error: any, response: any, body: any }> =>
-    {
-        return new Promise
+    export const get = (url: string): Thenable<{ error: any, response: any, body: any }> => new Promise
+    (
+        resolve => request.get
         (
-            resolve => request.get
-            (
-                url,
-                (error: any, response: request.Response, body: any) => resolve
-                ({
-                        error,
-                        response,
-                        body
-                })
-            )
-        );
-    };
-    export const execute = (data: any): Thenable<{ error: any, response: any, body: any }> =>
-    {
-        return new Promise
-        (
-            resolve => request
-            (
-                data,
-                (error: any, response: request.Response, body: any) => resolve
-                ({
+            url,
+            (error: any, response: request.Response, body: any) => resolve
+            ({
                     error,
                     response,
                     body
-                })
-            )
-        );
-    };
+            })
+        )
+    );
+    export const execute = (data: any): Thenable<{ error: any, response: any, body: any }> => new Promise
+    (
+        resolve => request
+        (
+            data,
+            (error: any, response: request.Response, body: any) => resolve
+            ({
+                error,
+                response,
+                body
+            })
+        )
+    );
 }
 
 export module KeepGrass
@@ -54,14 +48,10 @@ export module KeepGrass
 
     export const registerCommand = (context: vscode.ExtensionContext): void =>
     {
-        indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
-        context.subscriptions.push(indicator);
         context.subscriptions.push
         (
-            vscode.commands.registerCommand
-            (
-                'keep-grass-vscode.update', update
-            )
+            indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
+            vscode.commands.registerCommand('keep-grass-vscode.update', update),
         );
         update();
     };
@@ -110,10 +100,7 @@ export module KeepGrass
         indicator.show();
     };
 
-    const parseISODate = (source : string) : Date =>
-    {
-        return new Date(Date.parse(source.replace("T", " ")));
-    };
+    const parseISODate = (source : string) : Date => new Date(Date.parse(source.replace("T", " ")));
 
     const getLastUpdate = (xml : string) : Date | null =>
     {
@@ -134,18 +121,12 @@ export module KeepGrass
         }
         return ("00" +Math.floor(value *255).toString(16)).substr(-2);
     };
-    export const makeLeftTimeColor = (LeftTimeRate : number) : string =>
-    {
-        return "#"
+    export const makeLeftTimeColor = (LeftTimeRate : number) : string => "#"
             + numberToByteString(1.0 - LeftTimeRate)
             + numberToByteString(Math.min(0.5, LeftTimeRate))
             + numberToByteString(0.0);
-    };
 
-    const pad = (value : number) : string =>
-    {
-        return (10 <= value ? "":　"0") +value.toString();
-    };
+    const pad = (value : number) : string => (10 <= value ? "":　"0") +value.toString();
     const leftTimeToString = (leftTime : number) : string =>
     {
         if (leftTime < 0)
@@ -164,11 +145,5 @@ export module KeepGrass
     };
 }
 
-export const activate = (context: vscode.ExtensionContext) =>
-{
-    KeepGrass.registerCommand(context);
-}
-
-export const deactivate = () =>
-{
-}
+export const activate = KeepGrass.registerCommand;
+export const deactivate = () => { };
