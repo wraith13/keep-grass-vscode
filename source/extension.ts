@@ -36,7 +36,7 @@ module rx
 
 export module KeepGrass
 {
-    var indicator : vscode.StatusBarItem;
+    let indicator : vscode.StatusBarItem;
 
     const getConfiguration = <type>(key?: string): type =>
     {
@@ -104,7 +104,7 @@ export module KeepGrass
 
     const getLastUpdate = (xml : string) : Date | null =>
     {
-        var match = /<updated>(.*?)<\/updated>/.exec(xml);
+        const match = /<updated>(.*?)<\/updated>/.exec(xml);
         //console.log(match ? `${match[1]} ${match[2]}`: null);
         return match ? new Date(parseISODate(match[1])): null;
     };
