@@ -79,24 +79,28 @@ export module KeepGrass
             }
         }
     };
-    export const updateIndicator = (lastUpdate : Date) : void =>
+    const updateIndicator = (lastUpdate : Date) : void =>
     {
         const day = 24 *60 *60 *1000;
         const limit = lastUpdate.getTime() +day;
         const left = limit - Date.now();
-        const show = getConfiguration("show");
+        //const show = getConfiguration("show");
+        /*
         const text =
         (
-            ("lest stamp" !== show ? lastUpdate.toLocaleString(): "")
+            ("left stamp" !== show ? lastUpdate.toLocaleString(): "")
             +" "
             +("last stamp" !== show ? leftTimeToString(left): "")
         )
         .trim();
+        */
+        const text = `${getSymbol(left)} ${leftTimeToString(left)}`;
         console.log(text);
-        const color = makeLeftTimeColor((left *1.0) /(day *1.0));
-        console.log(color);
+        //const color = makeLeftTimeColor((left *1.0) /(day *1.0));
+        //console.log(color);
         indicator.text = text;
-        indicator.color = color;
+        //indicator.color = color;
+        indicator.tooltip = `last stamp: ${lastUpdate.toLocaleString()}`
         indicator.show();
     };
 
@@ -109,7 +113,8 @@ export module KeepGrass
         return match ? new Date(parseISODate(match[1])): null;
     };
 
-    export const numberToByteString = (value : number) : string =>
+    /*
+    const numberToByteString = (value : number) : string =>
     {
         if (value <= 0.0)
         {
@@ -121,10 +126,39 @@ export module KeepGrass
         }
         return ("00" +Math.floor(value *255).toString(16)).substr(-2);
     };
-    export const makeLeftTimeColor = (LeftTimeRate : number) : string => "#"
+    const makeLeftTimeColor = (LeftTimeRate : number) : string => "#"
             + numberToByteString(1.0 - LeftTimeRate)
             + numberToByteString(Math.min(0.5, LeftTimeRate))
             + numberToByteString(0.0);
+    */
+
+    const getSymbol = (leftTime : number) =>
+    {
+        const totalHours = leftTime /(60 *60 *1000);
+        if (totalHours < 0)
+        {
+            return "🚫";
+        }
+        else
+        if (totalHours < 6.0)
+        {
+            return "🍁";
+        }
+        else
+        if (totalHours < 12.0)
+        {
+            return "🍃";
+        }
+        else
+        if (totalHours < 18.0)
+        {
+            return "🌱";
+        }
+        else
+        {
+            return "🍀";
+        }
+    };
 
     const pad = (value : number) : string => (10 <= value ? "":　"0") +value.toString();
     const leftTimeToString = (leftTime : number) : string =>
