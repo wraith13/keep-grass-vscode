@@ -1,6 +1,6 @@
 # keep.grass for vscode README
 
-[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/wraith13.keep-grass-vscode.svg) ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.keep-grass-vscode.svg) ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.keep-grass-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.keep-grass-vscode)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/wraith13.keep-grass.svg) ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.keep-grass.svg) ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.keep-grass.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.keep-grass)
 
 This vscode extion shows the last commit timestamp in order to keep your github active. ( keep.grass for vscode )
 
@@ -26,14 +26,14 @@ keep.grass shows the last commit timestamp and/or left time.
 
 ### 0. ⬇️ Install keep.grass for vscode
 
-Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>), Type `ext install keep-grass-vscode` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>.  Restart VS Code when installation is completed.
+Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>), Type `ext install keep-grass` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>.  Restart VS Code when installation is completed.
 
 ### 1. 🔧 Configure keep.grass for vscode
 
 This extension contributes the following settings by [`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>File</kbd> -> <kbd>Preferences</kbd> -> <kbd>User Settings</kbd> ):
 
-* `keep-grass-vscode.user`: Your GitHub account
-* `keep-grass-vscode.show`: Select show item on status bar from `left time`, `last stamp`, `both`.
+* `keep-grass.user`: Your GitHub account
+* `keep-grass.show`: Select show item on status bar from `left time`, `last stamp`, `both`.
 
 Enjoy!
 
@@ -51,11 +51,11 @@ Command name on `keybindings.json` is diffarent from on Command Pallete. See bel
 
 |on Command Pallete|on keybindings.json|
 |-|-|
-|`Update keep.grass status`|`keep-grass-vscode.update`|
+|`Update keep.grass status`|`keep-grass.update`|
 
 ## Release Notes
 
-see ChangLog on [marketplace](https://marketplace.visualstudio.com/items/wraith13.keep-grass-vscode/changelog) or [github](https://github.com/wraith13/keep-grass-vscode/blob/master/CHANGELOG.md)
+see ChangLog on [marketplace](https://marketplace.visualstudio.com/items/wraith13.keep-grass/changelog) or [github](https://github.com/wraith13/keep-grass-vscode/blob/master/CHANGELOG.md)
 
 ## Support
 

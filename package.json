@@ -1,5 +1,5 @@
 {
-    "name": "keep-grass-vscode",
+    "name": "keep-grass",
     "displayName": "keep.grass",
     "description": "This vscode extion shows the last commit timestamp in order to keep your github active. ( keep.grass for vscode )",
     "version": "0.0.1",
@@ -26,7 +26,7 @@
     "contributes": {
         "commands": [
             {
-                "command": "keep-grass-vscode.update",
+                "command": "keep-grass.update",
                 "title": "update",
                 "category": "keep.grass"
             }
@@ -34,12 +34,12 @@
         "configuration": {
             "title": "keep.grass configuration",
             "properties": {
-                "keep-grass-vscode.user": {
+                "keep-grass.user": {
                     "type": "string",
                     "default": null,
                     "description": "Your GitHub account"
                 },
-                "keep-grass-vscode.show": {
+                "keep-grass.show": {
                     "type": "string",
                     "default": "both",
                     "description": "Select show item on status bar",

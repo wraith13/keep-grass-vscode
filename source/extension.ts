@@ -40,7 +40,7 @@ export module KeepGrass
 
     const getConfiguration = <type>(key?: string): type =>
     {
-        const configuration = vscode.workspace.getConfiguration("keep-grass-vscode");
+        const configuration = vscode.workspace.getConfiguration("keep-grass");
         return key ?
             configuration[key] :
             configuration;
@@ -51,7 +51,7 @@ export module KeepGrass
         context.subscriptions.push
         (
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
-            vscode.commands.registerCommand('keep-grass-vscode.update', update),
+            vscode.commands.registerCommand('keep-grass.update', update),
         );
         update();
     };
