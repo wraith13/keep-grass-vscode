@@ -84,22 +84,7 @@ export module KeepGrass
         const day = 24 *60 *60 *1000;
         const limit = lastUpdate.getTime() +day;
         const left = limit - Date.now();
-        //const show = getConfiguration("show");
-        /*
-        const text =
-        (
-            ("left stamp" !== show ? lastUpdate.toLocaleString(): "")
-            +" "
-            +("last stamp" !== show ? leftTimeToString(left): "")
-        )
-        .trim();
-        */
-        const text = `${getSymbol(left)} ${leftTimeToString(left)}`;
-        console.log(text);
-        //const color = makeLeftTimeColor((left *1.0) /(day *1.0));
-        //console.log(color);
-        indicator.text = text;
-        //indicator.color = color;
+        indicator.text = `${getSymbol(left)}${leftTimeToString(left)}`;
         indicator.tooltip = `last stamp: ${lastUpdate.toLocaleString()}`
         indicator.show();
     };
@@ -109,28 +94,8 @@ export module KeepGrass
     const getLastUpdate = (xml : string) : Date | null =>
     {
         const match = /<updated>(.*?)<\/updated>/.exec(xml);
-        //console.log(match ? `${match[1]} ${match[2]}`: null);
         return match ? new Date(parseISODate(match[1])): null;
     };
-
-    /*
-    const numberToByteString = (value : number) : string =>
-    {
-        if (value <= 0.0)
-        {
-            return "00";
-        }
-        if (1.0 <= value)
-        {
-            return "ff";
-        }
-        return ("00" +Math.floor(value *255).toString(16)).substr(-2);
-    };
-    const makeLeftTimeColor = (LeftTimeRate : number) : string => "#"
-            + numberToByteString(1.0 - LeftTimeRate)
-            + numberToByteString(Math.min(0.5, LeftTimeRate))
-            + numberToByteString(0.0);
-    */
 
     const getSymbol = (leftTime : number) =>
     {
