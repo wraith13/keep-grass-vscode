@@ -37,6 +37,7 @@ module rx
 export module KeepGrass
 {
     let indicator : vscode.StatusBarItem;
+    let context: vscode.ExtensionContext;
 
     const getConfiguration = <type>(key?: string): type =>
     {
@@ -46,8 +47,9 @@ export module KeepGrass
             configuration;
     };
 
-    export const registerCommand = (context: vscode.ExtensionContext): void =>
+    export const registerCommand = (aContext: vscode.ExtensionContext): void =>
     {
+        context = aContext;
         context.subscriptions.push
         (
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
@@ -61,6 +63,7 @@ export module KeepGrass
         const user = getConfiguration("user");
         if (user)
         {
+            context.globalState.update("keep-grass.last-update-stamp", (new Date()).getTime());
             const { error, response, body } = await rx.get(`https://github.com/${user}.atom`);
             if (error)
             {
@@ -74,6 +77,7 @@ export module KeepGrass
                 console.log(lastUpdate);
                 if (lastUpdate)
                 {
+                    context.globalState.update("keep-grass.last-contribute-stamp", lastUpdate.getTime());
                     updateIndicator(lastUpdate);
                 }
             }
