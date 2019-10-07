@@ -73,29 +73,29 @@ export module KeepGrass
             if (response.statusCode === 200)
             {
                 //console.log(body);
-                const lastUpdate = getLastUpdate(body);
-                console.log(lastUpdate);
-                if (lastUpdate)
+                const lastContribute = getLastContribute(body);
+                console.log(lastContribute);
+                if (lastContribute)
                 {
-                    context.globalState.update("keep-grass.last-contribute-stamp", lastUpdate.getTime());
-                    updateIndicator(lastUpdate);
+                    context.globalState.update("keep-grass.last-contribute-stamp", lastContribute.getTime());
+                    updateIndicator(lastContribute);
                 }
             }
         }
     };
-    const updateIndicator = (lastUpdate : Date) : void =>
+    const updateIndicator = (lastContribute : Date) : void =>
     {
         const day = 24 *60 *60 *1000;
-        const limit = lastUpdate.getTime() +day;
+        const limit = lastContribute.getTime() +day;
         const left = limit - Date.now();
         indicator.text = `${getSymbol(left)}${leftTimeToString(left)}`;
-        indicator.tooltip = `last stamp: ${lastUpdate.toLocaleString()}`
+        indicator.tooltip = `last stamp: ${lastContribute.toLocaleString()}`
         indicator.show();
     };
 
     const parseISODate = (source : string) : Date => new Date(Date.parse(source.replace("T", " ")));
 
-    const getLastUpdate = (xml : string) : Date | null =>
+    const getLastContribute = (xml : string) : Date | null =>
     {
         const match = /<updated>(.*?)<\/updated>/.exec(xml);
         return match ? new Date(parseISODate(match[1])): null;
