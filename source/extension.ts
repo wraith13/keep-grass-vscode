@@ -55,9 +55,17 @@ export module KeepGrass
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
             vscode.commands.registerCommand('keep-grass.update', update),
         );
-        update();
+        autoUpdate();
     };
 
+    export const autoUpdate = async () :Promise<void> =>
+    {
+        const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp") || 0;
+        if (lastUpdateStamp +(5 *60 *1000) < (new Date()).getTime())
+        {
+            update();
+        }
+    }
     export const update = async () : Promise<void> =>
     {
         const user = getConfiguration("user");
