@@ -90,6 +90,12 @@ export module KeepGrass
                 }
             }
         }
+        else
+        {
+            indicator.text = "no user";
+            indicator.tooltip = ""
+            indicator.show();
+        }
     };
     const updateIndicator = (lastContribute : Date) : void =>
     {
