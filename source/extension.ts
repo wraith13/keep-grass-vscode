@@ -60,10 +60,18 @@ export module KeepGrass
 
     export const autoUpdate = async () :Promise<void> =>
     {
-        const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp") || 0;
+        const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp", 0);
         if (lastUpdateStamp +(5 *60 *1000) < (new Date()).getTime())
         {
             update();
+        }
+        else
+        {
+            const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
+            if (lastContribute)
+            {
+                updateIndicator(new Date(lastContribute));
+            }
         }
     }
     export const update = async () : Promise<void> =>
