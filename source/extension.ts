@@ -73,7 +73,7 @@ export module KeepGrass
                 updateIndicator(new Date(lastContribute));
             }
         }
-    }
+    };
     export const update = async () : Promise<void> =>
     {
         const user = getConfiguration("user");
@@ -117,10 +117,75 @@ export module KeepGrass
 
     const parseISODate = (source : string) : Date => new Date(Date.parse(source.replace("T", " ")));
 
+    export const regExpExecToArray = (regexp: RegExp, text: string) =>
+    {
+        const result: RegExpExecArray[] = [];
+        while(true)
+        {
+            const match = regexp.exec(text);
+            if (null === match)
+            {
+                break;
+            }
+            result.push(match);
+        }
+        return result;
+    };
+
+    export const isContribution = (entry: { id: string, title: string}) =>
+    {
+        console.log(`entry: ${JSON.stringify(entry)}`);
+        const eventTypeName = (/([A-Za-z0-9]+Event)/.exec(entry.id)||[])[0];
+        switch (eventTypeName)
+        {
+        //  現状、まだ確認がとれてないモノをコメントアウトしている
+        case "GollumEvent":
+            return false;
+        case "PullRequestReviewCommentEvent":
+            return true;
+        case "IssueCommentEvent":
+            return false;
+        case "CreateEvent":
+            return 0 <= entry.title.indexOf(" created a repository ");
+        case "ForkEvent":
+            return true;
+        case "DeleteEvent":
+            return false;
+        case "PushEvent":
+            return true;
+        case "PullRequestEvent":
+            return true; // false の場合もある？
+        case "IssuesEvent":
+            return  0 <= entry.title.indexOf(" opened an issue in ") ||
+                    0 <= entry.title.indexOf(" opened issue ") ;
+        case "MemberEvent":
+            return false;
+        case "WatchEvent":
+            return false;
+        }
+        console.error(`isContribution(${eventTypeName}): UNKNOWN EVENT!!!`);
+        return false;
+    };
+    export const parseAtom = (xml : string) => regExpExecToArray(/<entry>(.*?)<\/entry>/gm, xml.replace(/\s+/gm, " ").trim())
+        .map
+        (
+            entry =>
+            ({
+                id: (/<id>(.*?)<\/id>/.exec(entry[1])||[])[1],
+                updated: (/<updated>(.*?)<\/updated>/.exec(entry[1])||[])[1],
+                title: (/<title(.*?)>(.*?)<\/title>/.exec(entry[1])||[])[2],
+            })
+        );
+
     const getLastContribute = (xml : string) : Date | null =>
     {
-        const match = /<updated>(.*?)<\/updated>/.exec(xml);
-        return match ? new Date(parseISODate(match[1])): null;
+        const entries = parseAtom(xml);
+        const lastContribute = entries.filter(entry => isContribution(entry))[0];
+        if (lastContribute)
+        {
+            return new Date(parseISODate(lastContribute.updated));
+        }
+        return null;
     };
 
     const getSymbol = (leftTime : number) =>
