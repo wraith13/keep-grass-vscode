@@ -191,28 +191,23 @@ export module KeepGrass
     const getSymbol = (leftTime : number) =>
     {
         const totalHours = leftTime /(60 *60 *1000);
-        if (totalHours < 0)
+        const symbols = [ "🍀", "🌱", "🍃", "⚠️", "🔥️", "💤" ];
+        let threshold = 24;
+        for(let i = 0; i < symbols.length -2; ++i)
         {
-            return "🚫";
+            threshold /= 2;
+            if (threshold < totalHours)
+            {
+                return symbols[i];
+            }
         }
-        else
-        if (totalHours < 6.0)
+        if (0 < totalHours)
         {
-            return "🍁";
-        }
-        else
-        if (totalHours < 12.0)
-        {
-            return "🍃";
-        }
-        else
-        if (totalHours < 18.0)
-        {
-            return "🌱";
+            return symbols[symbols.length -2];
         }
         else
         {
-            return "🍀";
+            return symbols[symbols.length -1];
         }
     };
 
