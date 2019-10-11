@@ -36,8 +36,11 @@ module rx
 
 export module KeepGrass
 {
+    const day = 24 *60 *60 *1000;
     let indicator : vscode.StatusBarItem;
     let context: vscode.ExtensionContext;
+    let autoUpdateIndicatorTimer: NodeJS.Timer | null = null;
+    let autoUpdateLastContributeTimer: NodeJS.Timer | null = null;
 
     const getConfiguration = <type>(key?: string): type =>
     {
@@ -55,24 +58,55 @@ export module KeepGrass
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
             vscode.commands.registerCommand('keep-grass.update', update),
         );
-        autoUpdate();
+        autoUpdateIndicator();
+        autoUpdateLastContribute();
     };
-
-    export const autoUpdate = async () :Promise<void> =>
+    export const dispose = (): void =>
     {
-        const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp", 0);
-        if (lastUpdateStamp +(5 *60 *1000) < (new Date()).getTime())
+        stopAutoUpdateIndicator();
+        stopAutoUpdateLastContribute();
+    }
+
+    export const stopAutoUpdateIndicator = () =>
+    {
+        if (autoUpdateIndicatorTimer)
         {
-            update();
+            clearTimeout(autoUpdateIndicatorTimer);
+            autoUpdateIndicatorTimer = null;
+        }
+    };
+    export const autoUpdateIndicator = async () :Promise<void> =>
+    {
+        const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
+        if (lastContribute)
+        {
+            updateIndicator(new Date(lastContribute));
         }
         else
         {
-            const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
-            if (lastContribute)
-            {
-                updateIndicator(new Date(lastContribute));
-            }
+            indicator.text = `🚫 no data`;
+            indicator.tooltip = ``
+            indicator.show();
         }
+        autoUpdateIndicatorTimer = setTimeout(autoUpdateIndicator, 10 *1000);
+    };
+    export const stopAutoUpdateLastContribute = () =>
+    {
+        if (autoUpdateLastContributeTimer)
+        {
+            clearTimeout(autoUpdateLastContributeTimer);
+            autoUpdateLastContributeTimer = null;
+        }
+    };
+    export const autoUpdateLastContribute = async () :Promise<void> =>
+    {
+        stopAutoUpdateLastContribute();
+        const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp", 0);
+        if (lastUpdateStamp +(10 *60 *1000) < (new Date()).getTime())
+        {
+            update();
+        }
+        autoUpdateLastContributeTimer = setTimeout(autoUpdateLastContribute, 15 *60 *1000);
     };
     export const update = async () : Promise<void> =>
     {
@@ -90,24 +124,13 @@ export module KeepGrass
             {
                 //console.log(body);
                 const lastContribute = getLastContribute(body);
-                console.log(lastContribute);
-                if (lastContribute)
-                {
-                    context.globalState.update("keep-grass.last-contribute-stamp", lastContribute.getTime());
-                    updateIndicator(lastContribute);
-                }
+                context.globalState.update("keep-grass.last-contribute-stamp", lastContribute)
+                console.log(`${new Date()} keep-grass.lastContribute: ${lastContribute}`);
             }
-        }
-        else
-        {
-            indicator.text = "no user";
-            indicator.tooltip = ""
-            indicator.show();
         }
     };
     const updateIndicator = (lastContribute : Date) : void =>
     {
-        const day = 24 *60 *60 *1000;
         const limit = lastContribute.getTime() +day;
         const left = limit - Date.now();
         indicator.text = `${getSymbol(left)}${leftTimeToString(left)}`;
@@ -230,4 +253,4 @@ export module KeepGrass
 }
 
 export const activate = KeepGrass.registerCommand;
-export const deactivate = () => { };
+export const deactivate = KeepGrass.dispose;
