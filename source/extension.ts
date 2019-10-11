@@ -190,18 +190,17 @@ export module KeepGrass
 
     const getSymbol = (leftTime : number) =>
     {
-        const totalHours = leftTime /(60 *60 *1000);
         const symbols = [ "🍀", "🌱", "🍃", "⚠️", "🔥️", "💤" ];
-        let threshold = 24;
+        let threshold = day;
         for(let i = 0; i < symbols.length -2; ++i)
         {
             threshold /= 2;
-            if (threshold < totalHours)
+            if (threshold < leftTime)
             {
                 return symbols[i];
             }
         }
-        if (0 < totalHours)
+        if (0 < leftTime)
         {
             return symbols[symbols.length -2];
         }
