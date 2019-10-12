@@ -117,15 +117,14 @@ export module KeepGrass
             const { error, response, body } = await rx.get(`https://github.com/${user}.atom`);
             if (error)
             {
-                console.log(`${new Date()} keep-grass.get.error: ${error}`);
+                console.log(`${new Date().toISOString()} keep-grass.get.error: ${error}`);
             }
             else
             if (response.statusCode === 200)
             {
-                //console.log(body);
                 const lastContribute = getLastContribute(body);
+                console.log(`${new Date().toISOString()} keep-grass.lastContribute: ${lastContribute ? lastContribute.toISOString(): lastContribute}`);
                 context.globalState.update("keep-grass.last-contribute-stamp", lastContribute)
-                console.log(`${new Date()} keep-grass.lastContribute: ${lastContribute}`);
             }
         }
     };
@@ -157,7 +156,7 @@ export module KeepGrass
 
     export const isContribution = (entry: { id: string, title: string}) =>
     {
-        //console.log(`${new Date()} keep-grass.entry: ${JSON.stringify(entry)}`);
+        //console.log(`${new Date().toISOString()} keep-grass.entry: ${JSON.stringify(entry)}`);
         const eventTypeName = (/([A-Za-z0-9]+Event)/.exec(entry.id)||[])[0];
         switch (eventTypeName)
         {
@@ -186,7 +185,7 @@ export module KeepGrass
         case "WatchEvent":
             return false;
         }
-        console.log(`${new Date()} keep-grass.isContribution(${eventTypeName}): UNKNOWN EVENT!!!`);
+        console.log(`${new Date().toISOString()} keep-grass.isContribution(${eventTypeName}): UNKNOWN EVENT!!!`);
         return false;
     };
     export const parseAtom = (xml : string) => regExpExecToArray(/<entry>(.*?)<\/entry>/gm, xml.replace(/\s+/gm, " ").trim())
