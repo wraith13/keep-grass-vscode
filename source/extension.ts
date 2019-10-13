@@ -64,98 +64,25 @@ class RepeatTimer
     }
 };
 
-export module KeepGrass
+export const regExpExecToArray = (regexp: RegExp, text: string) =>
 {
-    const day = 24 *60 *60 *1000;
-    let indicator : vscode.StatusBarItem;
-    let context: vscode.ExtensionContext;
+    const result: RegExpExecArray[] = [];
+    while(true)
+    {
+        const match = regexp.exec(text);
+        if (null === match)
+        {
+            break;
+        }
+        result.push(match);
+    }
+    return result;
+};
 
-    const getConfiguration = <type>(key?: string): type =>
-    {
-        const configuration = vscode.workspace.getConfiguration("keep-grass");
-        return key ?
-            configuration[key] :
-            configuration;
-    };
-
-    export const registerCommand = (aContext: vscode.ExtensionContext): void =>
-    {
-        context = aContext;
-        context.subscriptions.push
-        (
-            indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
-            vscode.commands.registerCommand('keep-grass.update', update),
-            new RepeatTimer(autoUpdateIndicator, () => 10 *1000),
-            new RepeatTimer(autoUpdateLastContribute, () => 15 *60 *1000),
-        );
-    };
-    export const autoUpdateIndicator = async () :Promise<void> =>
-    {
-        const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
-        if (lastContribute)
-        {
-            updateIndicator(new Date(lastContribute));
-        }
-        else
-        {
-            indicator.text = `🚫 no data`;
-            indicator.tooltip = ``
-            indicator.show();
-        }
-    };
-    export const autoUpdateLastContribute = async () :Promise<void> =>
-    {
-        const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp", 0);
-        if (lastUpdateStamp +(10 *60 *1000) < (new Date()).getTime())
-        {
-            update();
-        }
-    };
-    export const update = async () : Promise<void> =>
-    {
-        const user = getConfiguration("user");
-        if (user)
-        {
-            context.globalState.update("keep-grass.last-update-stamp", (new Date()).getTime());
-            const { error, response, body } = await rx.get(`https://github.com/${user}.atom`);
-            if (error)
-            {
-                console.log(`${new Date().toISOString()} keep-grass.get.error: ${error}`);
-            }
-            else
-            if (response.statusCode === 200)
-            {
-                const lastContribute = getLastContribute(body);
-                console.log(`${new Date().toISOString()} keep-grass.lastContribute: ${lastContribute ? lastContribute.toISOString(): lastContribute}`);
-                context.globalState.update("keep-grass.last-contribute-stamp", lastContribute)
-            }
-        }
-    };
-    const updateIndicator = (lastContribute : Date) : void =>
-    {
-        const limit = lastContribute.getTime() +day;
-        const left = limit - Date.now();
-        indicator.text = `${getSymbol(left)}${leftTimeToString(left)}`;
-        indicator.tooltip = `last stamp: ${lastContribute.toLocaleString()}`
-        indicator.show();
-    };
-
-    const parseISODate = (source : string) : Date => new Date(Date.parse(source.replace("T", " ")));
-
-    export const regExpExecToArray = (regexp: RegExp, text: string) =>
-    {
-        const result: RegExpExecArray[] = [];
-        while(true)
-        {
-            const match = regexp.exec(text);
-            if (null === match)
-            {
-                break;
-            }
-            result.push(match);
-        }
-        return result;
-    };
+export module GitHub
+{
+    export const getAtomUrl = (user: string) => `https://github.com/${user}.atom`;
+    export const parseISODate = (source : string) : Date => new Date(Date.parse(source.replace("T", " ")));
 
     export const isContribution = (entry: { id: string, title: string}) =>
     {
@@ -202,7 +129,7 @@ export module KeepGrass
             })
         );
 
-    const getLastContribute = (xml : string) : Date | null =>
+    export const getLastContribute = (xml : string) : Date | null =>
     {
         const entries = parseAtom(xml);
         const lastContribute = entries.filter(entry => isContribution(entry))[0];
@@ -211,6 +138,84 @@ export module KeepGrass
             return new Date(parseISODate(lastContribute.updated));
         }
         return null;
+    };
+
+}
+
+export module KeepGrass
+{
+    const day = 24 *60 *60 *1000;
+    let indicator : vscode.StatusBarItem;
+    let context: vscode.ExtensionContext;
+
+    const getConfiguration = <type>(key?: string): type =>
+    {
+        const configuration = vscode.workspace.getConfiguration("keep-grass");
+        return key ?
+            configuration[key] :
+            configuration;
+    };
+
+    export const registerCommand = (aContext: vscode.ExtensionContext): void =>
+    {
+        context = aContext;
+        context.subscriptions.push
+        (
+            indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
+            vscode.commands.registerCommand('keep-grass.update', update),
+            new RepeatTimer(autoUpdateIndicator, () => 60 *1000 / 10),
+            new RepeatTimer(autoUpdateLastContribute, () => 15 *60 *1000),
+        );
+    };
+    export const autoUpdateIndicator = async () :Promise<void> =>
+    {
+        const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
+        if (lastContribute)
+        {
+            updateIndicator(new Date(lastContribute));
+        }
+        else
+        {
+            indicator.text = `🚫 no data`;
+            indicator.tooltip = ``
+            indicator.show();
+        }
+    };
+    export const autoUpdateLastContribute = async () :Promise<void> =>
+    {
+        const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp", 0);
+        if (lastUpdateStamp +(10 *60 *1000) < (new Date()).getTime())
+        {
+            update();
+        }
+    };
+    export const update = async () : Promise<void> =>
+    {
+        const user = getConfiguration<string>("user");
+        if (user)
+        {
+            context.globalState.update("keep-grass.last-update-stamp", (new Date()).getTime());
+            const { error, response, body } = await rx.get(GitHub.getAtomUrl(user));
+            if (error)
+            {
+                console.log(`${new Date().toISOString()} keep-grass.get.error: ${error}`);
+            }
+            else
+            if (response.statusCode === 200)
+            {
+                const lastContribute = GitHub.getLastContribute(body);
+                console.log(`${new Date().toISOString()} keep-grass.lastContribute: ${lastContribute ? lastContribute.toISOString(): lastContribute}`);
+                context.globalState.update("keep-grass.last-contribute-stamp", lastContribute)
+            }
+        }
+    };
+    const updateIndicator = (lastContribute : Date) : void =>
+    {
+        const limit = lastContribute.getTime() +day;
+        const left = limit - Date.now();
+        indicator.text = `${getSymbol(left)}${leftTimeToString(left)}`;
+        indicator.tooltip = `last stamp: ${lastContribute.toLocaleString()}`
+        indicator.show();
     };
 
     const getSymbol = (leftTime : number) =>
