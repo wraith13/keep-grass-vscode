@@ -34,13 +34,41 @@ module rx
     );
 }
 
+class RepeatTimer
+{
+    timer: NodeJS.Timer | null;
+
+    constructor(public target: () => void, public getInterval: () => number)
+    {
+        this.exec();
+    }
+
+    exec = () =>
+    {
+        this.dispose();
+        this.target();
+        setTimeout
+        (
+            this.exec,
+            this.getInterval()
+        );
+    }
+
+    dispose = () =>
+    {
+        if (this.timer)
+        {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+    }
+};
+
 export module KeepGrass
 {
     const day = 24 *60 *60 *1000;
     let indicator : vscode.StatusBarItem;
     let context: vscode.ExtensionContext;
-    let autoUpdateIndicatorTimer: NodeJS.Timer | null = null;
-    let autoUpdateLastContributeTimer: NodeJS.Timer | null = null;
 
     const getConfiguration = <type>(key?: string): type =>
     {
@@ -57,23 +85,9 @@ export module KeepGrass
         (
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
             vscode.commands.registerCommand('keep-grass.update', update),
+            new RepeatTimer(autoUpdateIndicator, () => 10 *1000),
+            new RepeatTimer(autoUpdateLastContribute, () => 15 *60 *1000),
         );
-        autoUpdateIndicator();
-        autoUpdateLastContribute();
-    };
-    export const dispose = (): void =>
-    {
-        stopAutoUpdateIndicator();
-        stopAutoUpdateLastContribute();
-    }
-
-    export const stopAutoUpdateIndicator = () =>
-    {
-        if (autoUpdateIndicatorTimer)
-        {
-            clearTimeout(autoUpdateIndicatorTimer);
-            autoUpdateIndicatorTimer = null;
-        }
     };
     export const autoUpdateIndicator = async () :Promise<void> =>
     {
@@ -88,25 +102,14 @@ export module KeepGrass
             indicator.tooltip = ``
             indicator.show();
         }
-        autoUpdateIndicatorTimer = setTimeout(autoUpdateIndicator, 10 *1000);
-    };
-    export const stopAutoUpdateLastContribute = () =>
-    {
-        if (autoUpdateLastContributeTimer)
-        {
-            clearTimeout(autoUpdateLastContributeTimer);
-            autoUpdateLastContributeTimer = null;
-        }
     };
     export const autoUpdateLastContribute = async () :Promise<void> =>
     {
-        stopAutoUpdateLastContribute();
         const lastUpdateStamp = context.globalState.get<number>("keep-grass.last-update-stamp", 0);
         if (lastUpdateStamp +(10 *60 *1000) < (new Date()).getTime())
         {
             update();
         }
-        autoUpdateLastContributeTimer = setTimeout(autoUpdateLastContribute, 15 *60 *1000);
     };
     export const update = async () : Promise<void> =>
     {
@@ -252,4 +255,4 @@ export module KeepGrass
 }
 
 export const activate = KeepGrass.registerCommand;
-export const deactivate = KeepGrass.dispose;
+export const deactivate = () => { };
