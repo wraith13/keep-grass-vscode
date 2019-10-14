@@ -220,7 +220,7 @@ export module KeepGrass
 
     const getSymbol = (leftTime : number) =>
     {
-        const symbols = [ "🍀", "🌱", "🍃", "⚠️", "🔥️", "💤" ];
+        const symbols = getConfiguration<string[]>("symbols");
         let threshold = day;
         for(let i = 0; i < symbols.length -2; ++i)
         {
