@@ -39,15 +39,11 @@
                     "default": null,
                     "description": "Your GitHub account"
                 },
-                "keep-grass.show": {
-                    "type": "string",
-                    "default": "both",
-                    "description": "Select show item on status bar",
-                    "enum": [
-                        "left time",
-                        "last stamp",
-                        "both"
-                    ]
+                "keep-grass.symbols": {
+                    "type": "array",
+                    "default": [ "🍀", "🌱", "🍃", "🍁", "🔥️", "💤" ],
+                    "description": "lefttype symbols",
+                    "minItems": 2
                 }
             }
         }
