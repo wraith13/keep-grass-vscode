@@ -164,13 +164,13 @@ export module KeepGrass
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
             vscode.commands.registerCommand
             (
-                'keep-grass.update', () =>
+                'keep-grass.update', async () =>
                 {
                     try
                     {
                         updating = true;
                         autoUpdateIndicator();
-                        update();
+                        await update();
                     }
                     finally
                     {
