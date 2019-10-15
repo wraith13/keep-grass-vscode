@@ -139,7 +139,6 @@ export module GitHub
         }
         return null;
     };
-
 }
 
 export module KeepGrass
@@ -147,6 +146,7 @@ export module KeepGrass
     const day = 24 *60 *60 *1000;
     let indicator : vscode.StatusBarItem;
     let context: vscode.ExtensionContext;
+    let updating: boolean = false;
 
     const getConfiguration = <type>(key?: string): type =>
     {
@@ -162,23 +162,54 @@ export module KeepGrass
         context.subscriptions.push
         (
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
-            vscode.commands.registerCommand('keep-grass.update', update),
+            vscode.commands.registerCommand
+            (
+                'keep-grass.update', () =>
+                {
+                    try
+                    {
+                        updating = true;
+                        autoUpdateIndicator();
+                        update();
+                    }
+                    finally
+                    {
+                        updating = false;
+
+                        //  通信が一瞬で終わった時、通信中のユーザーフィードバックが弱くなるので表示の切り替えをちょっと遅らせる。
+                        setTimeout
+                        (
+                            autoUpdateIndicator,
+                            500
+                        );
+                    }
+                }
+            ),
             new RepeatTimer(autoUpdateIndicator, () => 60 *1000 / 10),
             new RepeatTimer(autoUpdateLastContribute, () => 15 *60 *1000),
         );
     };
     export const autoUpdateIndicator = async () :Promise<void> =>
     {
-        const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
-        if (lastContribute)
+        if (updating)
         {
-            updateIndicator(new Date(lastContribute));
+            indicator.text = `$(sync~spin) updating...`;
+            indicator.tooltip = ``
+            indicator.show();
         }
         else
         {
-            indicator.text = `🚫 no data`;
-            indicator.tooltip = ``
-            indicator.show();
+            const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
+            if (lastContribute)
+            {
+                updateIndicator(new Date(lastContribute));
+            }
+            else
+            {
+                indicator.text = `🚫 no data`;
+                indicator.tooltip = ``
+                indicator.show();
+            }
         }
     };
     export const autoUpdateLastContribute = async () :Promise<void> =>
