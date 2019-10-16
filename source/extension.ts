@@ -191,25 +191,16 @@ export module KeepGrass
     };
     export const autoUpdateIndicator = async () :Promise<void> =>
     {
-        if (updating)
+        const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
+        if (lastContribute)
         {
-            indicator.text = `$(sync~spin) updating...`;
-            indicator.tooltip = ``
-            indicator.show();
+            updateIndicator(new Date(lastContribute));
         }
         else
         {
-            const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
-            if (lastContribute)
-            {
-                updateIndicator(new Date(lastContribute));
-            }
-            else
-            {
-                indicator.text = `🚫 no data`;
-                indicator.tooltip = ``
-                indicator.show();
-            }
+            indicator.text = `${getSymbol(-1)} no data}`;
+            indicator.tooltip = ``
+            indicator.show();
         }
     };
     export const autoUpdateLastContribute = async () :Promise<void> =>
@@ -244,30 +235,37 @@ export module KeepGrass
     {
         const limit = lastContribute.getTime() +day;
         const left = limit - Date.now();
-        indicator.text = `${getSymbol(left)}${leftTimeToString(left)}`;
+        indicator.text = `${getSymbol(left)} ${leftTimeToString(left)}`;
         indicator.tooltip = `last stamp: ${lastContribute.toLocaleString()}`
         indicator.show();
     };
 
     const getSymbol = (leftTime : number) =>
     {
-        const symbols = getConfiguration<string[]>("symbols");
-        let threshold = day;
-        for(let i = 0; i < symbols.length -2; ++i)
+        if (updating)
         {
-            threshold /= 2;
-            if (threshold < leftTime)
-            {
-                return symbols[i];
-            }
-        }
-        if (0 < leftTime)
-        {
-            return symbols[symbols.length -2];
+            return "$(sync~spin)";
         }
         else
         {
-            return symbols[symbols.length -1];
+            const symbols = getConfiguration<string[]>("symbols");
+            let threshold = day;
+            for(let i = 0; i < symbols.length -2; ++i)
+            {
+                threshold /= 2;
+                if (threshold < leftTime)
+                {
+                    return symbols[i];
+                }
+            }
+            if (0 < leftTime)
+            {
+                return symbols[symbols.length -2];
+            }
+            else
+            {
+                return symbols[symbols.length -1];
+            }
         }
     };
 
