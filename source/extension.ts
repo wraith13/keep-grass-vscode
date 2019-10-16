@@ -169,39 +169,25 @@ export module KeepGrass
                     try
                     {
                         updating = true;
-                        autoUpdateIndicator();
+                        updateIndicator();
                         await update();
                     }
                     finally
                     {
                         updating = false;
-
                         //  通信が一瞬で終わった時、通信中のユーザーフィードバックが弱くなるので表示の切り替えをちょっと遅らせる。
                         setTimeout
                         (
-                            autoUpdateIndicator,
+                            () =>
+                            updateIndicator,
                             500
                         );
                     }
                 }
             ),
-            new RepeatTimer(autoUpdateIndicator, () => 60 *1000 / 10),
+            new RepeatTimer(updateIndicator, () => 60 *1000 / 10),
             new RepeatTimer(autoUpdateLastContribute, () => 15 *60 *1000),
         );
-    };
-    export const autoUpdateIndicator = async () :Promise<void> =>
-    {
-        const lastContribute = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
-        if (lastContribute)
-        {
-            updateIndicator(new Date(lastContribute));
-        }
-        else
-        {
-            indicator.text = `${getSymbol(-1)} no data}`;
-            indicator.tooltip = ``
-            indicator.show();
-        }
     };
     export const autoUpdateLastContribute = async () :Promise<void> =>
     {
@@ -231,12 +217,22 @@ export module KeepGrass
             }
         }
     };
-    const updateIndicator = (lastContribute : Date) : void =>
+    const updateIndicator = () : void =>
     {
-        const limit = lastContribute.getTime() +day;
-        const left = limit - Date.now();
-        indicator.text = `${getSymbol(left)} ${leftTimeToString(left)}`;
-        indicator.tooltip = `last stamp: ${lastContribute.toLocaleString()}`
+        const lastContributeStamp = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
+        if (lastContributeStamp)
+        {
+            const lastContribute = new Date(lastContributeStamp)
+            const limit = lastContribute.getTime() +day;
+            const left = limit - Date.now();
+            indicator.text = `${getSymbol(left)} ${leftTimeToString(left)}`;
+            indicator.tooltip = `last stamp: ${lastContribute.toLocaleString()}`
+        }
+        else
+        {
+            indicator.text = `${getSymbol(-1)} no data}`;
+            indicator.tooltip = ``
+        }
         indicator.show();
     };
 
