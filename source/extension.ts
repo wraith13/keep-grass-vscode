@@ -79,6 +79,8 @@ export const regExpExecToArray = (regexp: RegExp, text: string) =>
     return result;
 };
 
+export const timeout = (wait: number) => new Promise((resolve) => setTimeout(resolve, wait));
+
 export module GitHub
 {
     export const getAtomUrl = (user: string) => `https://github.com/${user}.atom`;
@@ -174,14 +176,10 @@ export module KeepGrass
                     }
                     finally
                     {
-                        updating = false;
                         //  通信が一瞬で終わった時、通信中のユーザーフィードバックが弱くなるので表示の切り替えをちょっと遅らせる。
-                        setTimeout
-                        (
-                            () =>
-                            updateIndicator,
-                            500
-                        );
+                        await timeout(500);
+                        updating = false;
+                        updateIndicator();
                     }
                 }
             ),
