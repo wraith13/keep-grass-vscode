@@ -166,7 +166,7 @@ export module KeepGrass
             indicator = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right),
             vscode.commands.registerCommand
             (
-                'keep-grass.update', async () =>
+                "keep-grass.update", async () =>
                 {
                     try
                     {
@@ -180,6 +180,31 @@ export module KeepGrass
                         await timeout(500);
                         updating = false;
                         updateIndicator();
+                    }
+                }
+            ),
+            vscode.commands.registerCommand
+            (
+                "keep-grass.menu", async () =>
+                {
+                    const selected = await vscode.window.showQuickPick
+                    (
+                        [
+                            {
+                                label: "$(sync) update",
+                                description: "",
+                                value: () => vscode.commands.executeCommand("keep-grass.update"),
+                            },
+                            {
+                                label: "$(gear) set user",
+                                description: "",
+                                value: () => update(),
+                            },
+                        ]
+                    );
+                    if (selected)
+                    {
+                        selected.value();
                     }
                 }
             ),
@@ -231,6 +256,7 @@ export module KeepGrass
             indicator.text = `${getSymbol(-1)} no data}`;
             indicator.tooltip = ``
         }
+        indicator.command = "keep-grass.menu";
         indicator.show();
     };
 
