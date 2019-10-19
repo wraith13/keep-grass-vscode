@@ -29,6 +29,11 @@
                 "command": "keep-grass.update",
                 "title": "update",
                 "category": "keep.grass"
+            },
+            {
+                "command": "keep-grass.menu",
+                "title": "menu",
+                "category": "keep.grass"
             }
         ],
         "configuration": {
@@ -38,6 +43,11 @@
                     "type": "string",
                     "default": null,
                     "description": "Your GitHub account"
+                },
+                "keep-grass.command": {
+                    "type": "string",
+                    "default": "keep-grass.menu",
+                    "description": "Command when the status bar item is clicked"
                 },
                 "keep-grass.symbols": {
                     "type": "array",

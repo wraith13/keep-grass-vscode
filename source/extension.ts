@@ -256,7 +256,7 @@ export module KeepGrass
             indicator.text = `${getSymbol(-1)} no data}`;
             indicator.tooltip = ``
         }
-        indicator.command = "keep-grass.menu";
+        indicator.command = getConfiguration<string>("command");
         indicator.show();
     };
 
