@@ -157,6 +157,10 @@ export module KeepGrass
             configuration[key] :
             configuration;
     };
+    const setConfiguration = <type>(key: string, value: type): void =>
+    {
+        vscode.workspace.getConfiguration("keep-grass").update(key, value, true);
+    };
 
     export const registerCommand = (aContext: vscode.ExtensionContext): void =>
     {
@@ -191,20 +195,36 @@ export module KeepGrass
                     (
                         [
                             {
-                                label: "$(sync) update",
+                                label: "$(sync) Update",
                                 description: "",
-                                value: () => vscode.commands.executeCommand("keep-grass.update"),
+                                value: async () => await vscode.commands.executeCommand("keep-grass.update"),
                             },
                             {
-                                label: "$(gear) set user",
+                                label: "$(gear) Set user ID",
                                 description: "",
-                                value: () => update(),
+                                value: async () =>
+                                {
+                                    const user = getConfiguration<string>("user");
+                                    const result = await vscode.window.showInputBox
+                                    (
+                                        {
+                                            value: undefined !== user && null !== user && "" !== user ? user: undefined,
+                                            placeHolder: "your GitHub User ID"
+                                        }
+                                    );
+                                    if (undefined !== result && null !== result && "" !== result && user !== result)
+                                    {
+                                        setConfiguration("user", result);
+                                        await timeout(100); // 設定の保存は即時反映されないっぽいのでちょっと待つ
+                                        await vscode.commands.executeCommand("keep-grass.update");
+                                    }
+                                },
                             },
                         ]
                     );
                     if (selected)
                     {
-                        selected.value();
+                        await selected.value();
                     }
                 }
             ),
