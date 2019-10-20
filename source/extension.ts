@@ -116,8 +116,10 @@ export module GitHub
             return false;
         case "WatchEvent":
             return false;
+        case "ReleaseEvent":
+            return false;
         }
-        console.log(`${new Date().toISOString()} keep-grass.isContribution(${eventTypeName}): UNKNOWN EVENT!!!`);
+        console.log(`${new Date().toISOString()} keep-grass.isContribution("${eventTypeName}", "${entry.title}"): UNKNOWN EVENT!!!`);
         return false;
     };
     export const parseAtom = (xml : string) => regExpExecToArray(/<entry>(.*?)<\/entry>/gm, xml.replace(/\s+/gm, " ").trim())
