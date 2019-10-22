@@ -262,27 +262,34 @@ export module KeepGrass
             {
                 const lastContribute = GitHub.getLastContribute(body);
                 console.log(`${new Date().toISOString()} keep-grass.lastContribute: ${lastContribute ? lastContribute.toISOString(): lastContribute}`);
-                context.globalState.update("keep-grass.last-contribute-stamp", lastContribute)
+                if (lastContribute)
+                {
+                    const map: {[user:string]:number} = { };
+                    map[user] = lastContribute.getTime();
+                    context.globalState.update("keep-grass.last-contribute-stamp",map);
+                }
             }
         }
     };
     const updateIndicator = () : void =>
     {
-        const lastContributeStamp = context.globalState.get<number>("keep-grass.last-contribute-stamp", 0);
-        if (lastContributeStamp)
+        const user = getConfiguration<string>("user");
+        const lastContributeStamp = context.globalState.get<{[user:string]:number}>("keep-grass.last-contribute-stamp", { });
+        if (user && lastContributeStamp[user])
         {
-            const lastContribute = new Date(lastContributeStamp)
+            const lastContribute = new Date(lastContributeStamp[user])
             const limit = lastContribute.getTime() +day;
             const left = limit - Date.now();
             indicator.text = `${getSymbol(left)} ${leftTimeToString(left)}`;
-            indicator.tooltip = `last stamp: ${lastContribute.toLocaleString()}`
+            indicator.tooltip = `${user}'s last contribute stamp: ${lastContribute.toLocaleString()}`
+            indicator.command = getConfiguration<string>("command");
         }
         else
         {
-            indicator.text = `${getSymbol(-1)} no data}`;
-            indicator.tooltip = ``
+            indicator.text = `${getSymbol(-1)} no data`;
+            indicator.tooltip = `Click to set your GitHub user ID.`
+            indicator.command = "keep-grass.setUserId";
         }
-        indicator.command = getConfiguration<string>("command");
         indicator.show();
     };
 
