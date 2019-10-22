@@ -4,7 +4,10 @@ out/test/**
 test/**
 source/**
 **/*.map
+**/.DS_Store
 .gitignore
 tsconfig.json
 vsc-extension-quickstart.md
+images/keep.grass.1024.png
+images/keep.grass.ico
 tslint.json
