@@ -19,19 +19,6 @@ module rx
             })
         )
     );
-    export const execute = (data: any): Thenable<{ error: any, response: any, body: any }> => new Promise
-    (
-        resolve => request
-        (
-            data,
-            (error: any, response: request.Response, body: any) => resolve
-            ({
-                error,
-                response,
-                body
-            })
-        )
-    );
 }
 
 class RepeatTimer
