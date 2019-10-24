@@ -4,8 +4,12 @@
 
 This vscode extion shows the last contribution timestamp in order to keep your github active. ( keep.grass for vscode )
 
+![screen shot](images/screenshot.png)
+
 Contributions is filled with green on the profile page of GitHub is cool!
 keep.grass is an application to let you know the time remaining until 24 hours elapse from the last Activity for developers trying to continue filling out Contributions on GitHub with green *every day without fail*.
+
+![ever green](images/evergreen.png)
 
 ## *Notes*
 
