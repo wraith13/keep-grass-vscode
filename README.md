@@ -33,13 +33,15 @@ Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux
 This extension contributes the following settings by [`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>File</kbd> -> <kbd>Preferences</kbd> -> <kbd>User Settings</kbd> ):
 
 * `keep-grass.user`: Your GitHub account
-* `keep-grass.show`: Select show item on status bar from `left time`, `last stamp`, `both`.
+* `keep-grass.command`: Command when the status bar item is clicked
+* `keep-grass.symbols`: Lefttype symbols
 
 Enjoy!
 
 ## Command
 
-* `Update keep.grass status` : Update keep.grass status by GitHub feed.
+* `keep.grass: Update Status` : Update keep.grass status by GitHub feed.
+* `keep.grass: Show Menu` : Show keep.grass menu.
 
 ## Keyboard shortcut Settings
 
@@ -51,7 +53,8 @@ Command name on `keybindings.json` is diffarent from on Command Pallete. See bel
 
 |on Command Pallete|on keybindings.json|
 |-|-|
-|`Update keep.grass status`|`keep-grass.update`|
+|`keep.grass: Update Status`|`keep-grass.update`|
+|`keep.grass: Show Menu`|`keep-grass.menu`|
 
 ## Release Notes
 
