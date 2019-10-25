@@ -3,7 +3,7 @@
     "displayName": "keep.grass",
     "description": "This vscode extion shows the last commit timestamp in order to keep your github active. ( keep.grass for vscode )",
     "icon": "images/keep.grass.128.png",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "publisher": "wraith13",
     "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
@@ -52,7 +52,14 @@
                 },
                 "keep-grass.symbols": {
                     "type": "array",
-                    "default": [ "🍀", "🌱", "🍃", "🍁", "🔥️", "💤" ],
+                    "default": [
+                        "🍀",
+                        "🌱",
+                        "🍃",
+                        "🍁",
+                        "🔥️",
+                        "💤"
+                    ],
                     "description": "Lefttype symbols",
                     "minItems": 2
                 }
