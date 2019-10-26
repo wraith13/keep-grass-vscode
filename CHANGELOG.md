@@ -1,7 +1,19 @@
 # Change Log
-All notable changes to the "keep-grass" extension will be documented in this file.
+
+All notable changes to the "unsaved-files-vscode" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.0.0 - 2019-10-25
+
+### Added
+
+- 🎊 Initial release of keep.grass for VS Code. 🎉
+
 ## [Unreleased]
-- Initial release
+
+## 0.0.0 - 2017-05-06
+
+### Added
+
+- Start this project.
