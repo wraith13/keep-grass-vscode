@@ -20,6 +20,9 @@
     "categories": [
         "Other"
     ],
+    "keywords": [
+        "GitHub"
+    ],
     "activationEvents": [
         "*"
     ],
