@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 1.?.? - 202?-??-??
 
+### Changed
+
+- `activationEvents`: `*` -> `onStartupFinished`
+
 ### Security
 
 - `npm audit fix --force`
