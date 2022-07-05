@@ -1,9 +1,6 @@
 'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as request from 'request';
-
 module rx
 {
     export const get = (url: string): Thenable<{ error: any, response: any, body: any }> => new Promise
@@ -20,16 +17,13 @@ module rx
         )
     );
 }
-
 class RepeatTimer
 {
-    timer: NodeJS.Timer | null;
-
+    timer: NodeJS.Timer | null = null;
     constructor(public target: () => void, public getInterval: () => number)
     {
         this.exec();
     }
-
     exec = () =>
     {
         this.dispose();
@@ -40,7 +34,6 @@ class RepeatTimer
             this.getInterval()
         );
     }
-
     dispose = () =>
     {
         if (this.timer)
@@ -49,8 +42,7 @@ class RepeatTimer
             this.timer = null;
         }
     }
-};
-
+}
 export const regExpExecToArray = (regexp: RegExp, text: string) =>
 {
     const result: RegExpExecArray[] = [];
@@ -65,14 +57,11 @@ export const regExpExecToArray = (regexp: RegExp, text: string) =>
     }
     return result;
 };
-
 export const timeout = (wait: number) => new Promise((resolve) => setTimeout(resolve, wait));
-
 export module GitHub
 {
     export const getAtomUrl = (user: string) => `https://github.com/${user}.atom`;
     export const parseISODate = (source : string) : Date => new Date(Date.parse(source.replace("T", " ")));
-
     export const isContribution = (entry: { id: string, title: string}) =>
     {
         //console.log(`${new Date().toISOString()} keep-grass.entry: ${JSON.stringify(entry)}`);
@@ -119,7 +108,6 @@ export module GitHub
                 title: (/<title(.*?)>(.*?)<\/title>/.exec(entry[1])||[])[2],
             })
         );
-
     export const getLastContribute = (xml : string) : Date | null =>
     {
         const entries = parseAtom(xml);
@@ -131,14 +119,12 @@ export module GitHub
         return null;
     };
 }
-
 export module KeepGrass
 {
     const day = 24 *60 *60 *1000;
     let indicator : vscode.StatusBarItem;
     let context: vscode.ExtensionContext;
     let updating: boolean = false;
-
     const getConfiguration = <type>(key?: string): type =>
     {
         const configuration = vscode.workspace.getConfiguration("keep-grass");
@@ -150,7 +136,6 @@ export module KeepGrass
     {
         vscode.workspace.getConfiguration("keep-grass").update(key, value, true);
     };
-
     export const registerCommand = (aContext: vscode.ExtensionContext): void =>
     {
         context = aContext;
@@ -264,22 +249,21 @@ export module KeepGrass
         const lastContributeStamp = context.globalState.get<{[user:string]:number}>("keep-grass.last-contribute-stamp", { });
         if (user && lastContributeStamp[user])
         {
-            const lastContribute = new Date(lastContributeStamp[user])
+            const lastContribute = new Date(lastContributeStamp[user]);
             const limit = lastContribute.getTime() +day;
             const left = limit - Date.now();
             indicator.text = `${getSymbol(left)} ${leftTimeToString(left)}`;
-            indicator.tooltip = `${user}'s last contribute stamp: ${lastContribute.toLocaleString()}`
+            indicator.tooltip = `${user}'s last contribute stamp: ${lastContribute.toLocaleString()}`;
             indicator.command = getConfiguration<string>("command");
         }
         else
         {
             indicator.text = `${getSymbol(-1)} no data`;
-            indicator.tooltip = `Click to set your GitHub user ID.`
+            indicator.tooltip = `Click to set your GitHub user ID.`;
             indicator.command = "keep-grass.setUserId";
         }
         indicator.show();
     };
-
     const getSymbol = (leftTime : number) =>
     {
         if (updating)
@@ -308,7 +292,6 @@ export module KeepGrass
             }
         }
     };
-
     const pad = (value : number) : string => (10 <= value ? "":　"0") +value.toString();
     const leftTimeToString = (leftTime : number) : string =>
     {
@@ -323,10 +306,9 @@ export module KeepGrass
             const totalMinutes = Math.floor(totalSeconds /60);
             const minutes = totalMinutes % 60;
             const hours = Math.floor(totalMinutes /60);
-            return pad(hours) +":" +pad(minutes) //+":" +pad(seconds);
+            return pad(hours) +":" +pad(minutes); //+":" +pad(seconds);
         }
     };
 }
-
 export const activate = KeepGrass.registerCommand;
 export const deactivate = () => { };
