@@ -295,7 +295,7 @@ export module KeepGrass
             }
         }
     };
-    const pad = (value : number) : string => (10 <= value ? "":　"0") +value.toString();
+    const pad = (value : number) : string => (10 <= value ? "": "0") +value.toString();
     const leftTimeToString = (leftTime : number) : string =>
     {
         if (leftTime < 0)
