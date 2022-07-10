@@ -4,7 +4,12 @@ All notable changes to the "unsaved-files-vscode" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 1.?.? - 202?-??-??
+## 1.0.1 - 2022-07-10
+
+### Added
+
+- Also released on [github.com](https://github.com/wraith13/keep-grass-vscode/releases)
+- VSIX download link in README.md
 
 ### Changed
 

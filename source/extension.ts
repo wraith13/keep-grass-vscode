@@ -21,17 +21,21 @@ class RepeatTimer
     timer: NodeJS.Timer | null = null;
     constructor(public target: () => void, public getInterval: () => number)
     {
-        this.exec();
+        this.setTimer();
     }
-    exec = () =>
+    private setTimer = () =>
     {
-        this.dispose();
-        this.target();
         setTimeout
         (
             this.exec,
             this.getInterval()
         );
+    }
+    exec = () =>
+    {
+        this.dispose();
+        this.target();
+        this.setTimer();
     }
     dispose = () =>
     {
