@@ -1,18 +1,20 @@
 import * as vscode from 'vscode';
-import * as request from 'request';
+import * as https from 'https';
+import { IncomingMessage } from 'http';
 module rx
 {
-    export const get = (url: string): Thenable<{ error: any, response: any, body: any }> => new Promise
+    export const get = (url: string): Thenable<{ error: any, response: IncomingMessage, body: string }> => new Promise
     (
-        resolve => request.get
+        resolve => https.get
         (
             url,
-            (error: any, response: request.Response, body: any) => resolve
-            ({
-                    error,
-                    response,
-                    body
-            })
+            response =>
+            {
+                let body = "";
+                response.setEncoding("UTF-8");
+                response.on("data", chunk => body += chunk);
+                response.on("end", () => resolve({ error:undefined, response, body}));
+            }
         )
     );
 }

@@ -74,9 +74,6 @@
         "compile": "tsc -watch -p ./",
         "lint": "eslint source --ext ts"
     },
-    "dependencies": {
-        "request": "^2.79.0"
-    },
     "devDependencies": {
         "@types/node": "^8.10.25",
         "@types/request": "^2.48.3",
