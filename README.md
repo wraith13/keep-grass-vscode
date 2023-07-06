@@ -1,7 +1,5 @@
 # keep.grass for vscode README
 
-[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/wraith13.keep-grass.svg) ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.keep-grass.svg) ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.keep-grass.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.keep-grass)
-
 This vscode extion shows the last contribution timestamp in order to keep your github active. ( keep.grass for vscode )
 
 ![screen shot](images/screenshot.png)
