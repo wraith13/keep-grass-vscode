@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 1.0.3 - 202?-??-??
 
+### Changed
+
+- Followed changes in GitHub feed specifications.
+
 ### Removed
 
 - VSMarketplaceBadges in README.md. ( To avoid an issue where updates cannot be released to the marketplace due to a VSMarketplaceBadges server failure. )

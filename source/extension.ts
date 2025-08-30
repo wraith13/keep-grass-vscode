@@ -66,11 +66,17 @@ export const timeout = (wait: number) => new Promise((resolve) => setTimeout(res
 export module GitHub
 {
     export const getAtomUrl = (user: string) => `https://github.com/${user}.atom`;
-    export const parseISODate = (source : string) : Date => new Date(Date.parse(source.replace("T", " ")));
+    export const parseISODate = (source : string) : Date => new Date(Date.parse(source));
+    export const toCamelCase = (source: string) : string =>
+        source[0].toUpperCase() + source.slice(1).toLowerCase();
+    export const shortEventTypeNameToFull = (shortName: string | undefined) =>
+        undefined === shortName ? undefined: (toCamelCase(shortName) +"Event")
     export const isContribution = (entry: { id: string, title: string}) =>
     {
         //console.log(`${new Date().toISOString()} keep-grass.entry: ${JSON.stringify(entry)}`);
-        const eventTypeName = (/([A-Za-z0-9]+Event)/.exec(entry.id)||[])[0];
+        const eventTypeName =
+            (/([A-Za-z0-9]+Event)/.exec(entry.id)||[])[0] ??
+            shortEventTypeNameToFull((/^(?:tag\:github\.com\,2008\:)([A-Za-z0-9]+)/.exec(entry.id)||[])[1]);
         switch (eventTypeName)
         {
         //  現状、まだ確認がとれてないモノをコメントアウトしている
@@ -100,7 +106,7 @@ export module GitHub
         case "ReleaseEvent":
             return false;
         }
-        console.log(`${new Date().toISOString()} keep-grass.isContribution("${eventTypeName}", "${entry.title}"): UNKNOWN EVENT!!!`);
+        console.log(`${new Date().toISOString()} keep-grass.isContribution("${eventTypeName}", "${entry.title}"): UNKNOWN EVENT!!! ${JSON.stringify(entry)}`);
         return false;
     };
     export const parseAtom = (xml : string) => regExpExecToArray(/<entry>(.*?)<\/entry>/gm, xml.replace(/\s+/gm, " ").trim())
@@ -119,6 +125,7 @@ export module GitHub
         const lastContribute = entries.filter(entry => isContribution(entry))[0];
         if (lastContribute)
         {
+console.log(`${new Date().toISOString()} keep-grass.lastContributeEntry: ${JSON.stringify(lastContribute)}`);
             return new Date(parseISODate(lastContribute.updated));
         }
         return null;
@@ -130,12 +137,10 @@ export module KeepGrass
     let indicator : vscode.StatusBarItem;
     let context: vscode.ExtensionContext;
     let updating: boolean = false;
-    const getConfiguration = <type>(key?: string): type =>
+    const getConfiguration = <type>(key: string): type =>
     {
         const configuration = vscode.workspace.getConfiguration("keep-grass");
-        return key ?
-            configuration[key] :
-            configuration;
+        return configuration[key];
     };
     const setConfiguration = <type>(key: string, value: type): void =>
     {
